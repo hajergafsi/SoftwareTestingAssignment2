@@ -11,7 +11,6 @@ package webTester;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 
@@ -24,18 +23,22 @@ public class WebsiteTester {
 	private AuthService authService;
 	private PopupsManager popupsManager;
 	private ProductService productService;
-	//WebDriverManager wdm = WebDriverManager.chromedriver().browserInDocker();
 	
 	public WebsiteTester( String url) throws InterruptedException {
 		 this.url = url;
 		 
 		 this.options = new ChromeOptions();
 		 options.addArguments("--disable-notifications");
-		 DesiredCapabilities capabilities = new DesiredCapabilities();
-		 capabilities.setBrowserName("firefox");
-	     capabilities.setCapability("marionette", true);
-		 this.driver = new FirefoxDriver();
-		 //driver = wdm.create();
+		 options.addArguments("start-maximized"); // open Browser in maximized mode
+		 options.addArguments("disable-infobars"); // disabling infobars
+		 options.addArguments("--disable-extensions"); // disabling extensions
+		 options.addArguments("--disable-gpu"); // applicable to windows os only
+		 options.addArguments("--disable-dev-shm-usage"); // overcome limited resource problems
+		 options.addArguments("--no-sandbox");
+		 options.addArguments("--verbose");
+		 options.addArguments("--window-size=1920,1080");
+		 options.addArguments("--headless");
+		 this.driver = new ChromeDriver(options);
 		 this.nav = new Navigator(driver,url);
 		 this.authService = new AuthService(driver,nav);
 		 this.popupsManager = new PopupsManager(driver);
@@ -51,9 +54,9 @@ public class WebsiteTester {
 	public void closePopups() {
 		try {
 			popupsManager.closeCookiesPopup();
-			Thread.sleep(500);
+			Thread.sleep(1500);
 		}catch(Exception e) {
-			System.out.print(e.getMessage());
+			//System.out.print(e.getMessage());
 		}
 	}
 	

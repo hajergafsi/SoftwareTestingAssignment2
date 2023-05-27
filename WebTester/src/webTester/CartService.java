@@ -118,10 +118,18 @@ public class CartService {
 		this.cart.removeProduct(product);
 	}
 	
+	public void closePopup() {
+		try {
+			driver.findElement(By.xpath("//div[contains(@class,'campaign-button')]")).click();
+		}catch(Exception e) {
+			//System.out.println("no campaign popup");
+		}
+	}
+	
 	public void removeProductFromCart(Product product) throws InterruptedException {
 		goToCart();
 		Thread.sleep(2000);
-		String parentElementXpath = "//div[@class='pb-basket-item' and div/a/p[@class='pb-item' and contains(@title,'"+ product.getName() +"')]]";
+		String parentElementXpath = "//div[@class='pb-basket-item' and div/a/p[@class='pb-item' and contains(@title,\""+ product.getName() +"\")]]";
 		String itemDetailXpath = parentElementXpath + "/div[@class='pb-basket-item-actions']";
 		WebElement deleteBtn = driver.findElement(By.xpath(itemDetailXpath + "/button/i[@class='i-trash']"));
 		deleteBtn.click();
@@ -132,9 +140,11 @@ public class CartService {
 	//Add nth product of X category to cart
 	public Product addElementToCart(int n,int qty,String category) throws Exception {
 		goToNthProductPage(n,category);
-		Thread.sleep(2000);
+		Thread.sleep(3500);
+		closePopup();
 		driver.navigate().refresh();
-		Thread.sleep(3000);		
+		closePopup();
+		Thread.sleep(3500);		
 		Product product = findProductDetails();
 		product.setQty(qty);
 		WebElement addToCart = driver.findElement(By.xpath("//div[@class='add-to-basket-button-text' and text()='Sepete Ekle']"));

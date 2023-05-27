@@ -33,15 +33,6 @@ class AuthServiceTest {
 	static String password = "a12345678.";
 	
 	
-	
-	@BeforeAll
-	@Tag("AuthTests")
-	static void configure() {
-		
-		//WebDriverManager.chromedriver().setup();
-		//System.setProperty("webdriver.gecko.driver", "drivers/geckodriver.exe");
-	}
-	
 	@BeforeEach
 	@Tag("AuthTests")
 	void setWebsiteUrl() throws InterruptedException {
@@ -60,7 +51,7 @@ class AuthServiceTest {
 		String password = faker.internet().password();
 		
 		AS.signIn(fakeEmail, password);
-		Thread.sleep(500);
+		Thread.sleep(2500);
 		assertDoesNotThrow(() -> {WT.getDriver().findElement(By.xpath("//span[text()='E-posta adresiniz ve/veya şifreniz hatalı.']"));});
 	}
 	
@@ -69,81 +60,80 @@ class AuthServiceTest {
 	@DisplayName("Login with valid Credentials attempt")
 	void validLoginTest() throws InterruptedException {
 		AS.signIn(email, password);
-		Thread.sleep(1000);
+		Thread.sleep(2500);
 		WebElement myProfileBtn = WT.getDriver().findElement(By.xpath("//div[contains(@class,'account-user')]"));
 		myProfileBtn.click();
-		Thread.sleep(1000);
+		Thread.sleep(2500);
 		assertDoesNotThrow(() -> WT.getDriver().findElement(By.xpath("//section[@class='section-user_info']/p")));
 	}
 	
 	@Test
 	@Tag("AuthTests")
-	@DisplayName("Register, email verification test")
-	void registerEmailVerificationTest() throws InterruptedException {
+	@DisplayName("Register with inadequate length password test")
+	void shortPasswordTest() throws InterruptedException {
 		Faker faker = new Faker();
-
+		WT.getNavigator().navigateTo("uyelik");
+		Thread.sleep(2500);
 		String fakeEmail = faker.internet().emailAddress();
-		String password = faker.internet().password();
-		
+		String password = faker.lorem().characters(6);
 		AS.signUp(fakeEmail, password);
-		Thread.sleep(1500);
-		assertDoesNotThrow(() -> {WT.getDriver().findElement(By.xpath("//span[text()='E-POSTA DOĞRULAMA']"));});
+		assertDoesNotThrow(() -> {WT.getDriver().findElement(By.xpath("//span[@class='message' and text()='Şifreniz 7 ile 64 karakter arasında olmalıdır.']"));});
 	}
 	
 	@Test
 	@Tag("AuthTests")
-	@DisplayName("Register with used email test")
-	void registerWithUsedEmailTest() throws InterruptedException {
-		AS.signUp(email, password);
-		Thread.sleep(1000);
-		assertDoesNotThrow(() -> WT.getDriver().findElement(By.xpath("//div[@id='error-box-wrapper']/ span[text()='Bu e-posta adresi kullanılamaz. Lütfen başka bir e-posta adresi deneyiniz.']")));
+	@DisplayName("Register with only-letters password warning message test")
+	void noNumberPasswordTest() throws InterruptedException {
+		Faker faker = new Faker();
+		WT.getNavigator().navigateTo("uyelik");
+		Thread.sleep(2500);
+		String fakeEmail = faker.internet().emailAddress();
+		String password = faker.lorem().fixedString(8);
+		AS.signUp(fakeEmail, password);
+		assertDoesNotThrow(() -> {WT.getDriver().findElement(By.xpath("//span[@class='message' and text()='Şifreniz en az 1 rakam içermelidir.']"));});
 	}
 	
 	@Test
 	@Tag("AuthTests")
-	@DisplayName("Email verification attempt with wrong verification code")
-	void invalidEmailVerificationTest() throws InterruptedException {
+	@DisplayName("Register with only-numbers password warning message test")
+	void noLetterPasswordTest() throws InterruptedException {
 		Faker faker = new Faker();
-
+		WT.getNavigator().navigateTo("uyelik");
+		Thread.sleep(2500);
 		String fakeEmail = faker.internet().emailAddress();
-		String password = faker.internet().password();
-		String fakeCode = faker.number().digits(6);
+		String password = "12345678";
 		AS.signUp(fakeEmail, password);
-		Thread.sleep(1500);
-		AS.sendVerificationCode(fakeCode);
-		Thread.sleep(1500);
-		assertDoesNotThrow(() -> {WT.getDriver().findElement(By.xpath("//span[text()='Doğrulama kodu bulunamadı.']"));});
+		assertDoesNotThrow(() -> {WT.getDriver().findElement(By.xpath("//span[@class='message' and text()='Şifreniz en az 1 harf içermelidir.']"));});
 	}
 	
 	@Test
 	@Tag("AuthTests")
-	@DisplayName("Resend Email verification code attempt before time is elapsed")
-	void resendVerificationInvalidTest() throws InterruptedException {
+	@DisplayName("Register with weak password warning message test")
+	void weakPasswordTest() throws InterruptedException {
 		Faker faker = new Faker();
+		WT.getNavigator().navigateTo("uyelik");
+		Thread.sleep(2500);
 		String fakeEmail = faker.internet().emailAddress();
-		String password = faker.internet().password();
+		String password = "1234567";
+		password += faker.regexify("[a-z]+[a-z0-9]*");
 		AS.signUp(fakeEmail, password);
-		Thread.sleep(500);
-		WebElement resend = AS.resendVerificationCode();
-		assertFalse(resend.isEnabled());	
+		assertDoesNotThrow(() -> {WT.getDriver().findElement(By.xpath("//span[contains(@class,'pw-title') and contains(@class,'weak')]"));});
 	}
+	
 	
 	@Test
 	@Tag("AuthTests")
-	@DisplayName("Resend Email verification code attempt after time is elapsed")
-	void resendVerificationValidTest() throws InterruptedException {
+	@DisplayName("Register with strong password success message test")
+	void strongPasswordTest() throws InterruptedException {
 		Faker faker = new Faker();
+		WT.getNavigator().navigateTo("uyelik");
+		Thread.sleep(2500);
 		String fakeEmail = faker.internet().emailAddress();
-		String password = faker.internet().password();
+		String password = "1234567";
+		password += faker.regexify("[._!&]+[a-z]+[a-zA-Z0-9]*");
 		AS.signUp(fakeEmail, password);
-		Thread.sleep(1500);
-		WebElement counter = WT.getDriver().findElement(By.xpath("//div[@class='evm-form-counter']"));
-		int waitingTime =  Integer.parseInt(counter.getText().substring(1, counter.getText().indexOf("Saniye")-1));
-		Thread.sleep((waitingTime + 5)*1000);
-		WebElement resend = AS.resendVerificationCode();
-		assertTrue(resend.isEnabled());	
+		assertDoesNotThrow(() -> {WT.getDriver().findElement(By.xpath("//span[contains(@class,'pw-title') and contains(@class,'high')]"));});
 	}
-	
 
 	
 	

@@ -26,7 +26,7 @@ class FilteringAndSortingTest {
 
 	@BeforeAll
 	static void setUpBeforeClass() throws Exception {
-		System.setProperty("webdriver.com.driver", "drivers/chromedriver.exe");
+		//System.setProperty("webdriver.com.driver", "drivers/chromedriver.exe");
 	}
 	
 	@BeforeEach
@@ -49,9 +49,9 @@ class FilteringAndSortingTest {
 	@DisplayName("Test filtering by price buttons with a random product from page")
 	void priceFilteringButtonTest() throws InterruptedException {
 		filteringAndSorting.goTocategoryPage("ayakkabi");
-		Thread.sleep(2500);
-		filteringAndSorting.togglePriceFilterDropdown();
 		Thread.sleep(2000);
+		filteringAndSorting.togglePriceFilterDropdown();
+		Thread.sleep(1000);
 		filteringAndSorting.selectPriceRangeWithRadioBtn(0, 150);
 		Thread.sleep(3000);
 		Random rnd = new Random();
@@ -65,9 +65,9 @@ class FilteringAndSortingTest {
 	@DisplayName("Test filtering by price min max fields with a random product from page")
 	void priceFilteringMinMaxfieldsTest() throws InterruptedException {
 		filteringAndSorting.goTocategoryPage("ayakkabi");
-		Thread.sleep(2500);
+		Thread.sleep(3500);
 		filteringAndSorting.togglePriceFilterDropdown();
-		Thread.sleep(2000);
+		Thread.sleep(1000);
 		filteringAndSorting.enterMaxMin(150, 200);
 		Thread.sleep(3000);
 		Random rnd = new Random();
@@ -88,17 +88,19 @@ class FilteringAndSortingTest {
 		assertEquals(filteringAndSorting.getNumberOfFreeShippingArticles(),filteringAndSorting.getNumberOfProducts());
 	}
 	
-	/*@Test
+	@Test
 	@Tag("SortingTests")
 	@DisplayName("Test sorting by ascending price")
 	void sortingByAscPriceTest() throws InterruptedException {
 		filteringAndSorting.goTocategoryPage("elbise");
-		Thread.sleep(2500);
+		Thread.sleep(3500);
 		filteringAndSorting.setSortingOption("En düşük fiyat");
 		Thread.sleep(2000);
 		Random rnd = new Random();
-		int orderProd1 = rnd.nextInt(filteringAndSorting.getNumberOfProducts() - 2);
-		int orderProd2 = rnd.nextInt(orderProd1+1,filteringAndSorting.getNumberOfProducts());
+		System.out.println("Total products = "+filteringAndSorting.getNumberOfProducts());
+		int orderProd1 = rnd.nextInt(filteringAndSorting.getNumberOfProducts() - 3)+1;
+		int orderProd2 = rnd.nextInt(filteringAndSorting.getNumberOfProducts() - orderProd1 + 1) + orderProd1;
+		System.out.println("products number 1 is the  "+orderProd1+ "th   \nproducts number 2 is the "+orderProd2+ "th");
 		Thread.sleep(2000);
 		assertTrue(filteringAndSorting.getPriceByProductOrder(orderProd1) <= filteringAndSorting.getPriceByProductOrder(orderProd2));
 	}
@@ -112,11 +114,13 @@ class FilteringAndSortingTest {
 		filteringAndSorting.setSortingOption("En yüksek fiyat");
 		Thread.sleep(2000);
 		Random rnd = new Random();
-		int orderProd1 = rnd.nextInt(filteringAndSorting.getNumberOfProducts() - 2);
-		int orderProd2 = rnd.nextInt(orderProd1+1,filteringAndSorting.getNumberOfProducts());
+		int orderProd1 = rnd.nextInt(filteringAndSorting.getNumberOfProducts() - 3) + 1;
+		int orderProd2 = rnd.nextInt(filteringAndSorting.getNumberOfProducts() - orderProd1 + 1) + orderProd1;
+		System.out.println("Total products = "+filteringAndSorting.getNumberOfProducts());
+		System.out.println("products number 1 is the  "+orderProd1+ "th   \nproducts number 2 is the "+orderProd2+ "th");
 		Thread.sleep(2000);
 		assertTrue(filteringAndSorting.getPriceByProductOrder(orderProd1) >= filteringAndSorting.getPriceByProductOrder(orderProd2));
-	}*/
+	}
 	
 	
 }

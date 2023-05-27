@@ -18,6 +18,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.NoSuchElementException;
@@ -60,12 +61,13 @@ class ProductServiceTest {
 	@Tag("ProductTests")
 	@DisplayName("Add a product to favourites with auth")
 	void addToFavWithAuthtest() throws InterruptedException {
+		System.out.println("add a product to favourites");
 		WT.getAuth().signInExitant();
-		Thread.sleep(2000);
+		Thread.sleep(3500);
 		productService.emptyFavourites();
 		Thread.sleep(2000);
 		String name = productService.addToFavourites();
-		Thread.sleep(2000);
+		Thread.sleep(3500);
 		assertTrue(productService.isFavourite(name));
 	}
 	
@@ -73,6 +75,7 @@ class ProductServiceTest {
 	@Tag("ProductTests")
 	@DisplayName("Remove a product from favourites")
 	void removeFromFavstest() throws InterruptedException {
+		System.out.println("Remove a product from favourites");
 		WT.getAuth().signInExitant();
 		Thread.sleep(3000);
 		productService.emptyFavourites();

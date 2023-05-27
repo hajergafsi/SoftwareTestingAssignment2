@@ -9,6 +9,7 @@
 
 package webTester;
 
+import java.time.Duration;
 import java.util.List;
 
 import org.openqa.selenium.By;
@@ -16,6 +17,9 @@ import org.openqa.selenium.Point;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class FilteringAndSorting {
 	WebDriver driver;
@@ -28,13 +32,13 @@ public class FilteringAndSorting {
 	
 	public void goTocategoryPage(String category) throws InterruptedException {
 		navigator.navigateTo(category);
-		Thread.sleep(2000);
+		Thread.sleep(3500);
 		
 		JavascriptExecutor js = (JavascriptExecutor) driver;
-
+//(78, 576)
 		// Scroll down the page by 500 pixels
 		js.executeScript("window.scrollBy(0,500)");
-		Thread.sleep(1000);
+		Thread.sleep(2000);
 		driver.navigate().refresh();
 	}
 	
@@ -65,11 +69,14 @@ public class FilteringAndSorting {
 	
 	public void togglePriceFilterDropdown()
 	{
-		WebElement priceBtn = driver.findElement(By.xpath("//div[@class='fltrs-wrppr hide-fltrs' and div[div[@class='fltr-cntnr-ttl' and text()='Fiyat']]]"));
+		WebDriverWait wait = new WebDriverWait(driver,Duration.ofSeconds(10)); // Maximum wait time of 10 seconds
+
+		WebElement priceBtn = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//div[@class='fltrs-wrppr hide-fltrs' and div[div[@class='fltr-cntnr-ttl' and text()='Fiyat']]]")));
+		//WebElement priceBtn = driver.findElement(By.xpath("//div[@class='fltrs-wrppr hide-fltrs' and div[div[@class='fltr-cntnr-ttl' and text()='Fiyat']]]"));
 		priceBtn.click();
 	}
 	public double getPriceByProductOrder(int order) {
-		String price = driver.findElement(By.xpath("//div[contains(@class,'p-card-wrppr') and position()=" + String.valueOf(order) + "] "
+		String price = driver.findElement(By.xpath("//div[contains(@class,'p-card-wrppr')][" + String.valueOf(order) + "] "
 				+ "/div/a/div[@class='product-down']/div[@class='price-promotion-container']/div/div[@class='prc-box-dscntd']")).getText();
 		return(formatPrice(price));
 	}

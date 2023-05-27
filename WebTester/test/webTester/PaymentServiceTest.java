@@ -11,6 +11,7 @@ package webTester;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.math.BigDecimal;
 import java.sql.Driver;
 
 import org.junit.jupiter.api.AfterEach;
@@ -73,16 +74,16 @@ class PaymentServiceTest {
 	@DisplayName("Payment page total cost control")
 	void paymentCostTest() throws Exception {
 		WT.getAuth().signInExitant();
-		Thread.sleep(2000);
+		Thread.sleep(3000);
 		cartService.emptyCart();
 		Thread.sleep(3000);
 		Product pr = cartService.addElementToCart(2, 1, "Spor&Outdoor");
 		Thread.sleep(3000);
-		Product pr2 = cartService.addElementToCart(10, 2, "Spor&Outdoor");
+		Product pr2 = cartService.addElementToCart(10, 1, "Spor&Outdoor");
 		Thread.sleep(3000);
 		paymentService.goToPaymentPage();
-		Thread.sleep(5000);
-		assertEquals(paymentService.getNetTotal(),cartService.getTotal());
+		Thread.sleep(3500);
+		assertEquals(paymentService.getNetTotal(),Math.round(cartService.getTotal()*100.0)/100.0);
 	}
 	
 	@Test

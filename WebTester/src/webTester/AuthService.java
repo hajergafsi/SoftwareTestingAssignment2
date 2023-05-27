@@ -53,6 +53,16 @@ public class AuthService {
 	}
 	
 	
+	public void fillSignUpFields(String email,String password) throws InterruptedException {
+		navigator.navigateTo("uyelik");
+		Thread.sleep(2500);
+		WebElement emailField = driver.findElement(By.xpath("//input[@id='register-email']"));
+		WebElement passField = driver.findElement(By.xpath("//input[@id='register-password-input']"));
+		emailField.sendKeys(email);
+		passField.sendKeys(password);
+	}
+	
+	
 	public void sendVerificationCode(String code) throws InterruptedException {
 		WebElement codeField = driver.findElement(By.xpath("//input[@name='code']"));
 		WebElement submitBtn = driver.findElement(By.xpath("//button[text()='Onayla']"));
