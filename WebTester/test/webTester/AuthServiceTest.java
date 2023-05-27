@@ -21,7 +21,6 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
-import io.github.bonigarcia.wdm.WebDriverManager;
 
 import com.github.javafaker.Faker;
 

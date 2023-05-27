@@ -37,8 +37,6 @@ COPY test WebTester
 
 WORKDIR WebTester
 
-RUN mkdir -p drivers
-COPY drivers drivers
 RUN mkdir -p faker
 COPY faker faker
 RUN mkdir -p selenium
@@ -53,7 +51,6 @@ COPY Manifest.txt bin
 COPY faker bin/faker
 COPY selenium bin/selenium
 COPY plugins bin/plugins
-COPY drivers bin/drivers
 
 
 WORKDIR bin
@@ -63,4 +60,4 @@ RUN jar -cvfm Program.jar Manifest.txt ./webTester/*.class
 ENV DISPLAY=:99
 RUN Xvfb :99 -ac -screen 0 1280x1024x24 &
 
-CMD ["java", "-cp", ".:faker/*:selenium/*:plugins/*:drivers/*:Program.jar", "webTester.Program","--headless"]
+CMD ["java", "-cp", ".:faker/*:selenium/*:plugins/*:Program.jar", "webTester.Program","--headless"]
